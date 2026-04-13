@@ -13,3 +13,4 @@ pymupdf
 python-dotenv
 python-multipart
 networkx
+fastembed
