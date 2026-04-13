@@ -12,19 +12,25 @@ _client = None
 
 def get_qdrant_client() -> QdrantClient:
     """
-    Initializes and returns a singleton QdrantClient instance configured for local persistence.
+    Initializes and returns a singleton QdrantClient instance configured for local persistence or cloud.
     """
     global _client
     if _client is None:
-        path = settings.QDRANT_STORAGE_PATH
-        if path and path != ":memory:":
-            # Ensure the directory exists
-            os.makedirs(path, exist_ok=True)
-            logger.info(f"Initializing Qdrant client with local disk storage at: {path}")
-            _client = QdrantClient(path=path)
+        url = os.environ.get("QDRANT_URL")
+        api_key = os.environ.get("QDRANT_API_KEY")
+        if url:
+            logger.info(f"Initializing Qdrant client with remote cloud cluster at: {url}")
+            _client = QdrantClient(url=url, api_key=api_key or None)
         else:
-            logger.info("Initializing Qdrant client in ephemeral ':memory:' mode.")
-            _client = QdrantClient(location=":memory:")
+            path = settings.QDRANT_STORAGE_PATH
+            if path and path != ":memory:":
+                # Ensure the directory exists
+                os.makedirs(path, exist_ok=True)
+                logger.info(f"Initializing Qdrant client with local disk storage at: {path}")
+                _client = QdrantClient(path=path)
+            else:
+                logger.info("Initializing Qdrant client in ephemeral ':memory:' mode.")
+                _client = QdrantClient(location=":memory:")
     return _client
 
 def get_vector_store() -> QdrantVectorStore:
@@ -83,32 +89,43 @@ def get_vector_store() -> QdrantVectorStore:
 
 def clear_vector_store():
     """
-    Recreates (clears) the collection in the vector database by closing the client,
-    deleting the storage directory completely, and reinitializing.
+    Recreates (clears) the collection in the vector database.
     """
     global _client
-    if _client is not None:
+    url = os.environ.get("QDRANT_URL")
+    collection_name = settings.QDRANT_COLLECTION_NAME
+    
+    if url:
+        client = get_qdrant_client()
         try:
-            # Close client to release RocksDB lock
-            _client.close()
+            if client.collection_exists(collection_name):
+                client.delete_collection(collection_name)
+                logger.info(f"Successfully deleted Qdrant cloud collection: {collection_name}")
         except Exception as e:
-            logger.warning(f"Error closing Qdrant client: {str(e)}")
-        _client = None
-
-    # Delete storage folder
-    path = settings.QDRANT_STORAGE_PATH
-    if path and path != ":memory:":
-        import shutil
-        import time
-        for attempt in range(5):
+            logger.warning(f"Failed to delete Qdrant cloud collection: {str(e)}")
+    else:
+        if _client is not None:
             try:
-                if os.path.exists(path):
-                    shutil.rmtree(path)
-                logger.info(f"Successfully deleted Qdrant storage directory: {path}")
-                break
+                # Close client to release RocksDB lock
+                _client.close()
             except Exception as e:
-                logger.warning(f"Failed to delete Qdrant storage directory on attempt {attempt+1}: {str(e)}")
-                time.sleep(0.5)
+                logger.warning(f"Error closing Qdrant client: {str(e)}")
+            _client = None
+
+        # Delete storage folder
+        path = settings.QDRANT_STORAGE_PATH
+        if path and path != ":memory:":
+            import shutil
+            import time
+            for attempt in range(5):
+                try:
+                    if os.path.exists(path):
+                        shutil.rmtree(path)
+                    logger.info(f"Successfully deleted Qdrant storage directory: {path}")
+                    break
+                except Exception as e:
+                    logger.warning(f"Failed to delete Qdrant storage directory on attempt {attempt+1}: {str(e)}")
+                    time.sleep(0.5)
 
     # Reinitialize it
     get_vector_store()
