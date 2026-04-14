@@ -52,8 +52,8 @@ class RateLimitedEmbeddings(Embeddings):
             results.extend(batch_embeddings)
             
             if i + self.batch_size < len(texts):
-                sleep_time = max(1.0, (len(batch) / self.requests_per_minute) * 60.0)
-                logger.info(f"Throttling embedding requests. Sleeping for {sleep_time:.2f} seconds...")
+                sleep_time = 2.0
+                logger.info(f"Throttling embedding requests. Sleeping for {sleep_time} seconds...")
                 time.sleep(sleep_time)
                 
         return results
@@ -91,7 +91,7 @@ def get_embeddings():
             model="models/gemini-embedding-001",
             google_api_key=settings.GEMINI_API_KEY
         )
-        return RateLimitedEmbeddings(inner, requests_per_minute=80, batch_size=5)
+        return RateLimitedEmbeddings(inner, requests_per_minute=80, batch_size=100)
     elif settings.EMBEDDING_PROVIDER == "openai":
         if not settings.OPENAI_API_KEY:
             raise ValueError(
@@ -102,7 +102,7 @@ def get_embeddings():
             model="text-embedding-3-small",
             openai_api_key=settings.OPENAI_API_KEY
         )
-        return RateLimitedEmbeddings(inner, requests_per_minute=200, batch_size=20)
+        return RateLimitedEmbeddings(inner, requests_per_minute=200, batch_size=100)
     elif settings.EMBEDDING_PROVIDER == "local":
         logger.info("Initializing local FastEmbedEmbeddings (BAAI/bge-small-en-v1.5)...")
         return FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")

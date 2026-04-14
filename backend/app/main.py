@@ -12,6 +12,7 @@ from app.ingestion.chunker import chunk_documents
 from app.retriever.retriever import retrieve_similar_chunks
 from app.risk_analysis import analyzer
 from app.llm.llm_service import get_llm
+from langchain_core.messages import SystemMessage, HumanMessage
 
 
 # Setup logging
@@ -143,8 +144,8 @@ async def upload_document(
         
         import time
         is_local = settings.EMBEDDING_PROVIDER == "local"
-        batch_size = 50 if is_local else 8
-        sleep_time = 0.0 if is_local else 6.0
+        batch_size = 50 if is_local else 100
+        sleep_time = 0.0
         
         logger.info(f"Adding {len(chunks)} chunks to Qdrant in batches of {batch_size} (throttled={not is_local})...")
         for i in range(0, len(chunks), batch_size):
