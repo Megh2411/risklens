@@ -80,6 +80,37 @@ def get_vector_store() -> QdrantVectorStore:
                 distance=qmodels.Distance.COSINE
             )
         )
+        
+    # Ensure payload indexes exist (safely catch if already created)
+    try:
+        client.create_payload_index(
+            collection_name=collection_name,
+            field_name="metadata.company",
+            field_schema=qmodels.PayloadSchemaType.KEYWORD
+        )
+        client.create_payload_index(
+            collection_name=collection_name,
+            field_name="metadata.year",
+            field_schema=qmodels.PayloadSchemaType.INTEGER
+        )
+        client.create_payload_index(
+            collection_name=collection_name,
+            field_name="metadata.quarter",
+            field_schema=qmodels.PayloadSchemaType.KEYWORD
+        )
+        client.create_payload_index(
+            collection_name=collection_name,
+            field_name="metadata.document_type",
+            field_schema=qmodels.PayloadSchemaType.KEYWORD
+        )
+        client.create_payload_index(
+            collection_name=collection_name,
+            field_name="metadata.categories",
+            field_schema=qmodels.PayloadSchemaType.KEYWORD
+        )
+        logger.info("Successfully ensured Qdrant payload indexes exist.")
+    except Exception as idx_err:
+        logger.warning(f"Note on payload indexes creation: {str(idx_err)}")
     
     return QdrantVectorStore(
         client=client,
