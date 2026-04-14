@@ -7,7 +7,9 @@ import {
   GitBranch, 
   Network, 
   Sparkles, 
-  Compass
+  Compass,
+  Menu,
+  X
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -25,6 +27,7 @@ type Tab = 'landing' | 'dashboard' | 'compare' | 'upload' | 'timeline' | 'explor
 export default function App() {
   const [currentTab, setCurrentTab] = useState<Tab>('landing');
   const [selectedCompany, setSelectedCompany] = useState<string>('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 
   const renderActivePage = () => {
@@ -176,9 +179,14 @@ export default function App() {
             {/* Top Workspace Header */}
             <header className="h-16 border-b border-glass flex items-center justify-between px-6 z-20 bg-[#05040a]/40 backdrop-blur-md">
               <div className="flex items-center gap-4">
-                {/* Responsive Hamburger for Mobile (simply clicks back to landing or shifts view for now) */}
-                <div className="flex items-center gap-2 md:hidden">
-                  <Compass className="w-5 h-5 text-brand-purple" />
+                {/* Responsive Hamburger for Mobile */}
+                <div className="flex items-center gap-2.5 md:hidden">
+                  <button 
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    className="p-1 rounded-lg hover:bg-white/5 border border-transparent hover:border-glass text-slate-400 hover:text-white transition-all cursor-pointer"
+                  >
+                    {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                  </button>
                   <span className="font-bold text-white text-sm">RiskLens AI</span>
                 </div>
                 
@@ -211,6 +219,55 @@ export default function App() {
                 </button>
               </div>
             </header>
+
+            {/* Mobile Menu Overlay */}
+            <AnimatePresence>
+              {mobileMenuOpen && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                  className="fixed inset-x-0 top-16 bottom-0 bg-[#05040a]/95 backdrop-blur-lg z-30 flex flex-col justify-between p-6 md:hidden border-t border-glass"
+                >
+                  <div className="space-y-6">
+                    <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Navigation</div>
+                    <nav className="flex flex-col gap-2">
+                      {navItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = currentTab === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            onClick={() => {
+                              setCurrentTab(item.id);
+                              setMobileMenuOpen(false);
+                            }}
+                            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all text-sm font-semibold cursor-pointer ${
+                              isActive 
+                                ? 'bg-brand-purple/10 border border-brand-purple/20 text-brand-neon-purple shadow-glow-purple/5' 
+                                : 'border border-transparent hover:bg-white/5 text-slate-400 hover:text-slate-200'
+                            }`}
+                          >
+                            <Icon className={`w-4.5 h-4.5 ${isActive ? 'text-brand-neon-purple' : 'text-slate-400'}`} />
+                            <span>{item.label}</span>
+                          </button>
+                        );
+                      })}
+                    </nav>
+                  </div>
+
+                  {/* Bottom active company badge */}
+                  <div className="border-t border-glass pt-4 text-[10px] space-y-2">
+                    <div className="text-slate-500 font-bold uppercase tracking-wider">Active Workspace</div>
+                    <div className="flex items-center justify-between text-slate-300 font-semibold truncate bg-white/5 border border-glass p-3 rounded-xl">
+                      <span className="truncate text-xs">{selectedCompany || 'None Selected'}</span>
+                      <div className={`w-2 h-2 rounded-full ${selectedCompany ? 'bg-brand-neon-emerald' : 'bg-slate-600'}`}></div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Scrollable View Area */}
             <main className="flex-1 p-6 md:p-8 overflow-y-auto z-10">
