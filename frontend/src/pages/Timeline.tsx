@@ -444,7 +444,7 @@ export const TimelinePage: React.FC<TimelineProps> = ({
                   <div className="w-full sm:w-[45%] hidden sm:block"></div>
 
                   {/* Content card */}
-                  <div className="w-full sm:w-[45%] pl-6 sm:pl-0 glass-panel p-5 rounded-2xl space-y-3 border-glow-purple transition-all relative">
+                  <div className="w-full sm:w-[45%] glass-panel p-5 rounded-2xl space-y-3 border-glow-purple transition-all relative">
                     <div className="flex items-center justify-between">
                       <div className="inline-flex items-center gap-1.5 text-xs text-brand-neon-purple font-bold uppercase tracking-wider">
                         <Calendar className="w-3.5 h-3.5" />

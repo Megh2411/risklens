@@ -133,6 +133,59 @@ export const ComparePage: React.FC = () => {
             <p className="text-slate-300 text-sm leading-relaxed font-sans">{result.summary}</p>
           </div>
 
+          {/* Visual Risk Distribution Bar */}
+          <div className="glass-panel p-6 rounded-2xl space-y-4 bg-gradient-to-b from-black/10 to-transparent">
+            <div className="flex items-center justify-between border-b border-glass/40 pb-2">
+              <h3 className="font-bold text-white text-sm">Exposure Overlap & Specificity</h3>
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Proportional Distribution</span>
+            </div>
+            <div className="space-y-3">
+              <div className="flex h-5 rounded-xl overflow-hidden bg-black/60 border border-glass/40">
+                {result.unique_company_a.length > 0 && (
+                  <div 
+                    className="bg-gradient-to-r from-brand-purple to-indigo-600 h-full flex items-center justify-center text-[10px] font-bold text-white transition-all" 
+                    style={{ width: `${(result.unique_company_a.length / (result.unique_company_a.length + result.unique_company_b.length + result.shared_risks.length || 1)) * 100}%` }}
+                    title={`Unique to ${companyA}: ${result.unique_company_a.length} risks`}
+                  >
+                    {`${((result.unique_company_a.length / (result.unique_company_a.length + result.unique_company_b.length + result.shared_risks.length || 1)) * 100).toFixed(0)}%`}
+                  </div>
+                )}
+                {result.shared_risks.length > 0 && (
+                  <div 
+                    className="bg-brand-neon-cyan/80 h-full flex items-center justify-center text-[10px] font-bold text-slate-900 transition-all" 
+                    style={{ width: `${(result.shared_risks.length / (result.unique_company_a.length + result.unique_company_b.length + result.shared_risks.length || 1)) * 100}%` }}
+                    title={`Shared Overlap: ${result.shared_risks.length} risks`}
+                  >
+                    {`${((result.shared_risks.length / (result.unique_company_a.length + result.unique_company_b.length + result.shared_risks.length || 1)) * 100).toFixed(0)}%`}
+                  </div>
+                )}
+                {result.unique_company_b.length > 0 && (
+                  <div 
+                    className="bg-gradient-to-r from-sky-600 to-brand-blue h-full flex items-center justify-center text-[10px] font-bold text-white transition-all" 
+                    style={{ width: `${(result.unique_company_b.length / (result.unique_company_a.length + result.unique_company_b.length + result.shared_risks.length || 1)) * 100}%` }}
+                    title={`Unique to ${companyB}: ${result.unique_company_b.length} risks`}
+                  >
+                    {`${((result.unique_company_b.length / (result.unique_company_a.length + result.unique_company_b.length + result.shared_risks.length || 1)) * 100).toFixed(0)}%`}
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider pt-1">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded bg-brand-purple" />
+                  <span>{companyA} Unique ({result.unique_company_a.length})</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded bg-brand-neon-cyan" />
+                  <span>Shared Overlap ({result.shared_risks.length})</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded bg-brand-blue" />
+                  <span>{companyB} Unique ({result.unique_company_b.length})</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Shared vs Unique Lists */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Shared Risks */}

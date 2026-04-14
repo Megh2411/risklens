@@ -388,16 +388,18 @@ def news_compare(req: NewsCompareRequest):
         "3. Comparison Summary: High-level contrast of what management claims vs what the news reports.\n"
         "Format your output strictly as a JSON object matching this schema:\n"
         "{\n"
-        "  \"new_risks\": [\"Risk title: detail...\", \"Another risk...\"],\n"
-        "  \"discrepancies\": [\"Conflict: description...\"],\n"
-        "  \"summary\": \"Brief comparative summary...\"\n"
-        "}"
+        "  \"new_risks\": [],\n"
+        "  \"discrepancies\": [],\n"
+        "  \"summary\": \"\"\n"
+        "}\n"
+        "Fill the 'new_risks' array with descriptions of identified new risks, the 'discrepancies' array with descriptions of identified conflicts, and 'summary' with your comparative summary. "
+        "If there are no new risks or discrepancies, leave those arrays empty. Do not return any placeholder text or description from this instruction."
     )
     
     human_prompt = (
         f"Company: {req.company}\n"
         f"Annual Report Disclosures:\n{report_context}\n\n"
-        f"Recent News Report:\n{req.news_text}"
+        f"Recent News Report:\n{n_text}"
     )
     
     try:
