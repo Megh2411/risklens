@@ -1,12 +1,14 @@
-# RiskLens AI: Interactive Temporal RAG Risk Intelligence Platform
+# RiskLens: Interactive Temporal RAG Risk Intelligence Platform
 
-RiskLens AI is an advanced corporate risk assessment platform designed to analyze, track, and visualize risk disclosures from complex SEC filings, transcripts, and financial reports chronologically. 
+**Live Demo**: [risklens-nine-mu.vercel.app](https://risklens-nine-mu.vercel.app/)
+
+RiskLens is an advanced corporate risk assessment platform designed to analyze, track, and visualize risk disclosures from complex SEC filings, transcripts, and financial reports chronologically. 
 
 Unlike standard conversational search interfaces, RiskLens organizes ingestion documents into a structured vector database, auto-categorizes them across threat vectors, maps their chronological changes on a 2D network force simulation graph, and traces Year-over-Year (YoY) risk indices with deterministic evaluation metrics.
 
 ---
 
-## 🚀 Why RiskLens AI? (How it beats copy-pasting to ChatGPT)
+## 🚀 Why RiskLens? (How it beats copy-pasting to ChatGPT)
 
 If you upload two PDFs to ChatGPT and ask it to analyze risk evolution, you face several major limitations that RiskLens solves:
 

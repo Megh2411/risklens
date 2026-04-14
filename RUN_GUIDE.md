@@ -1,6 +1,6 @@
-# Run Guide: RiskLens AI Setup & Installation
+# Run Guide: RiskLens Setup & Installation
 
-Follow these steps to set up and run the RiskLens AI backend and frontend applications locally.
+Follow these steps to set up and run the RiskLens backend and frontend applications locally.
 
 ## 📋 Prerequisites
 

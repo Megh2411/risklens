@@ -1,6 +1,6 @@
 # System Workflows & Architecture Diagrams
 
-This document details the step-by-step workflow of the major pipelines in RiskLens AI: Ingestion, Retrieval (RAG), Graph Explorer, and Temporal Scoring.
+This document details the step-by-step workflow of the major pipelines in RiskLens: Ingestion, Retrieval (RAG), Graph Explorer, and Temporal Scoring.
 
 ---
 

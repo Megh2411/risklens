@@ -1,6 +1,6 @@
 # Technical Theory & Algorithmic Design
 
-This document details the mathematical models, algorithmic designs, and technical decisions implemented across the RiskLens AI RAG pipeline.
+This document details the mathematical models, algorithmic designs, and technical decisions implemented across the RiskLens RAG pipeline.
 
 ---
 
